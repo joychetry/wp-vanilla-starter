@@ -2,6 +2,14 @@
 
 All notable changes to this starter. Versions follow semver.
 
+## Unreleased
+
+- `extras/mu-plugins/vs-lean-global-styles.php`: optional must-use plugin (plugin
+  layer, not loaded by the theme) that drops core default presets the theme turns
+  off in theme.json. Front page inline CSS 37,660 to 29,934 bytes in Playground
+  (page weight; global styles do not count toward core's inline limit).
+  `extras/` is excluded from the theme zip and from `rename.sh`.
+
 ## 0.1.0 - 2026-10-18
 
 - Block theme for WordPress 7.0+ and PHP 8.1+, theme.json v3 with a five-color

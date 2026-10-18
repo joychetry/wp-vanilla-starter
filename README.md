@@ -26,6 +26,8 @@ Or drop the folder into `wp-content/themes/` and activate it.
   `video-facade` (YouTube player on click, 715 byte module).
 - `assets/css/`: `global.css` plus per-block `core-*.css`, all inlined by core.
 - `bin/`: `budget.sh`, `rename.sh`, Playground blueprint.
+- `extras/`: optional plugin-layer code, not loaded by the theme. Currently a
+  must-use plugin that trims core's unused default presets from global styles.
 
 Site-wide speed and cleanup (emoji, speculative loading, caching, image formats)
 are deliberately left to plugins chosen per project.

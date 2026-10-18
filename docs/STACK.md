@@ -85,6 +85,24 @@ Pick per project. The theme ships none of these and requires none of them.
 - **One cleanup/asset plugin**: Perfmatters, or the host's cache plugin
   (LiteSpeed Cache, WP Rocket). Use it for emoji, dashicons, embeds, head links,
   per-page script control. Only one, so they do not overlap.
+- **`extras/mu-plugins/vs-lean-global-styles.php`** (optional, ships with the
+  starter but is not part of the theme). A must-use plugin that hooks
+  `wp_theme_json_data_default` and empties each core default preset group
+  (palette, gradients, duotone, font sizes, spacing sizes, shadows, aspect
+  ratios) that the active theme turns off in theme.json. Core prints those
+  presets anyway so old content keeps its look, which is exactly why removing
+  them is a per-site decision. Theme-agnostic: it reads the active theme's
+  `default*` settings and does nothing when they are on. Turn it off with
+  `add_filter( 'vs_lean_global_styles', '__return_false' );`. Measured on 0.1.0
+  in Playground (WordPress 7.1.3): `global-styles` drops from 17,141 to 9,415
+  bytes; front page inline CSS from 37,660 to 29,934 bytes; single post from
+  34,288 to 26,562 bytes. Front page and single post render with identical
+  markup and identical computed styles on every element, and the editor shows
+  the same palette and sizes. This saves page weight only: `global-styles` has
+  no `src`, so it never counts toward core's inline limit (see Measured
+  baseline) and the plugin does not change which stylesheets get inlined.
+  The theme never loads it, `bin/budget.sh` does not count it, and
+  `git archive` leaves it out of the theme zip.
 - **Server**: PHP 8.4+, OPcache, Redis object cache, server-level page cache
   (nginx fastcgi_cache or LiteSpeed). TTFB is a hosting problem first.
 
@@ -199,10 +217,17 @@ Tier 1 plus plain CSS with theme.json tokens and inline SVG. No third-party fron
   of it is core's default palette, gradient, shadow and aspect-ratio presets,
   which core keeps printing for older content even with the defaults turned off
   in theme.json. Trimming that is a global-styles filter, which is plugin-layer
-  work.
-- Headroom: the page is close to core's 40KB inline limit, mostly because of core
-  CSS. If you add a lot of block CSS, watch for styles falling back to
-  `<link>` tags (see the budget check in `docs/REUSE.md`).
+  work: `extras/mu-plugins/vs-lean-global-styles.php` removes 7.7KB of it
+  (numbers in the plugin layer section above).
+- Headroom: core's limit (`wp_maybe_inline_styles`, 40,000 bytes) only counts
+  enqueued stylesheets that have both a `src` and `path`: core block CSS,
+  `wp-block-library`, the skip link and the theme's files. Measured just before
+  core inlines: 17,749 bytes on the front page and 14,923 on the single post, so
+  about 22KB of headroom. Inline-only styles (`global-styles`, block supports,
+  emoji, block style variations) print on top of that and are not counted, which
+  is why the page total (37.7KB) is higher. If you add a lot of block CSS, watch
+  for styles falling back to `<link>` tags (see the budget check in
+  `docs/REUSE.md`).
 
 ## Open questions
 

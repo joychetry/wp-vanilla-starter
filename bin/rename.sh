@@ -2,8 +2,8 @@
 # Rename the starter for a new project. Run once, right after cloning.
 #   bin/rename.sh <new-slug> "<New Name>" [prefix]
 # Rewrites slug, text domain, block names, handles, PHP namespace, the vs_/vs- prefix
-# and the theme name in code files. docs/ and CHANGELOG.md are left alone because
-# they describe the starter and are shared with it.
+# and the theme name in code files. docs/, extras/ and CHANGELOG.md are left alone
+# because they describe or belong to the starter and are shared with it.
 set -euo pipefail
 
 slug=${1:-}
@@ -37,7 +37,7 @@ fi
 count=0
 while IFS= read -r file; do
 	case $file in
-		docs/* | CHANGELOG.md | bin/rename.sh | *.svg) continue ;;
+		docs/* | extras/* | CHANGELOG.md | bin/rename.sh | *.svg) continue ;;
 	esac
 	[ -f "$file" ] || continue
 	perl -pi -e '

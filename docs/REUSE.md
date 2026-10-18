@@ -16,7 +16,8 @@ git remote add origin <your project repo URL>
 
 `rename.sh` rewrites the slug, text domain, block names, style handles, PHP
 namespace, the `vs_`/`vs-` prefix and the theme name in every tracked code file.
-It leaves `docs/` and `CHANGELOG.md` alone because they describe the starter.
+It leaves `docs/`, `extras/` and `CHANGELOG.md` alone because they describe or
+belong to the starter.
 Check the result with `git diff --stat`, then:
 
 1. **Tokens.** Edit `theme.json`: palette (keep `base`, `surface`, `muted`,
@@ -138,6 +139,21 @@ The theme does no cleanup and no site-wide speed work. On each project:
 4. One cleanup/asset plugin: Perfmatters or the host's cache plugin. Turn off
    emoji, embeds, dashicons for visitors, unused head links. Leave CSS inlining
    alone: core already inlines the theme's CSS.
+5. Lean global styles (optional). Copy
+   `extras/mu-plugins/vs-lean-global-styles.php` into `wp-content/mu-plugins/`.
+   It drops core's default presets that theme.json turns off: on the starter's
+   front page that cut inline CSS from 37,660 to 29,934 bytes (global styles
+   17,141 to 9,415). That is page weight; global styles never count toward
+   core's 40KB inline limit. Content that uses a default preset class loses that style,
+   so check first on a site with existing content:
+
+   ```sh
+   wp db query "SELECT ID, post_title FROM $(wp db prefix)posts WHERE post_status <> 'trash' AND post_content REGEXP 'has-(black|cyan-bluish-gray|white|pale-pink|vivid-red|luminous-vivid-orange|luminous-vivid-amber|light-green-cyan|vivid-green-cyan|pale-cyan-blue|vivid-cyan-blue|vivid-purple)-(color|background-color|border-color)|gradient-background|has-medium-font-size|var:preset.(gradient|shadow|aspect-ratio)'"
+   ```
+
+   Restyle any hits with theme presets first. To test in Playground, add
+   `--mount=./extras/mu-plugins/vs-lean-global-styles.php:/wordpress/wp-content/mu-plugins/vs-lean-global-styles.php`.
+   Disable it per site with `add_filter( 'vs_lean_global_styles', '__return_false' );`.
 
 See `docs/STACK.md` for the reasons.
 
