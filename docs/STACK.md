@@ -187,8 +187,16 @@ Tier 1 plus plain CSS with theme.json tokens and inline SVG. No third-party fron
   so it loads only where that block renders. Theme block CSS lives next to the
   block (`blocks/*/style.css`) and core registers it from block.json. Every
   stylesheet has `path` data, so core inlines it.
-- **JavaScript.** None by default. The only script is the video facade's 715 byte
-  module, which core loads only on pages where that block renders.
+- **JavaScript.** None by default. The only theme script is the video facade's
+  715 byte module, which core loads only on pages where that block renders. On
+  single posts with comments open, core's comments form block also enqueues
+  core's `comment-reply.min.js` (2,950 bytes raw, 1,350 gzip, async, low
+  priority) so "Reply" can move the form. That is core JS; dropping it is
+  plugin-layer work.
+- **Comments.** `parts/comments.html` uses core Comments blocks. Core renders
+  nothing, and loads no comment CSS or JS, when comments are closed and the post
+  has none. No avatars, so no Gravatar requests; add `core/avatar` to the part if
+  a project wants them.
 - **PHP.** No remote requests and no directory scans on a warm request. The
   only queries the theme adds are the menu lookups the nav block needs. The block stylesheet list is cached in a non-expiring transient
   keyed by theme version (autoloaded, so no extra query); `local` and
@@ -213,6 +221,11 @@ Tier 1 plus plain CSS with theme.json tokens and inline SVG. No third-party fron
   the theme. Scripts: only core's speculation rules and emoji loader.
 - Single post with the video facade: 46.7KB HTML, 7.9KB theme CSS, plus the
   715 byte facade module.
+- Same post with comments open and 2 comments (0.2.0): 63.0KB HTML, 45.2KB
+  inline CSS in total, still 0 `<link>` stylesheets. Core's comment and button
+  block CSS adds about 9KB and the theme's `core-comments.css` 1KB. Counted
+  toward the inline limit: 25,070 bytes (front page 17,891), so about 15KB of
+  headroom on a post with comments.
 - `global-styles` from core is the largest inline style (about 17KB). About 6KB
   of it is core's default palette, gradient, shadow and aspect-ratio presets,
   which core keeps printing for older content even with the defaults turned off

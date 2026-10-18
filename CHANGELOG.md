@@ -9,6 +9,11 @@ All notable changes to this starter. Versions follow semver.
   off in theme.json. Front page inline CSS 37,660 to 29,934 bytes in Playground
   (page weight; global styles do not count toward core's inline limit).
   `extras/` is excluded from the theme zip and from `rename.sh`.
+- Comments on single posts: `parts/comments.html` (core Comments title,
+  template with threaded replies, pagination and form, no avatars) plus a 1KB
+  `core-comments.css`. Core renders nothing when comments are closed and there
+  are none; empty template parts are hidden in `global.css`. The Playground
+  blueprint adds 2 comments (one reply) to the sample post.
 
 ## 0.1.0 - 2026-10-18
 

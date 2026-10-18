@@ -101,6 +101,11 @@ a {
 	}
 }
 
+/* A template part whose blocks render nothing (comments closed) takes no space. */
+.wp-block-template-part:not(:has(*)) {
+	display: none;
+}
+
 /*
  * Layout primitives (Every Layout / CUBE CSS). Add the class in the block's
  * "Additional CSS class" field. Tune with the custom properties.

@@ -1,0 +1,30 @@
+/* Comments section (parts/comments.html). Core styles the form and list basics. */
+.vs-comments {
+	margin-block-start: var(--wp--preset--spacing--70);
+	padding-block-start: var(--wp--preset--spacing--60);
+	border-block-start: 1px solid var(--wp--preset--color--surface);
+}
+
+.vs-comments .wp-block-comment-template li + li,
+.vs-comments .wp-block-comment-template ol {
+	margin-block-start: var(--wp--preset--spacing--50);
+}
+
+/* Replies: indent with a rule so the thread is visible. */
+.vs-comments .wp-block-comment-template ol {
+	padding-inline-start: var(--wp--preset--spacing--40);
+	border-inline-start: 2px solid var(--wp--preset--color--surface);
+}
+
+.vs-comment__meta {
+	gap: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+}
+
+.vs-comment__meta .wp-block-comment-author-name {
+	font-weight: 600;
+}
+
+.vs-comments .comment-reply-title small {
+	margin-inline-start: var(--wp--preset--spacing--30);
+	font-size: var(--wp--preset--font-size--small);
+}
