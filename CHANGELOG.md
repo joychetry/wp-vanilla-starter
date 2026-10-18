@@ -2,7 +2,7 @@
 
 All notable changes to this starter. Versions follow semver.
 
-## Unreleased
+## 0.2.0 - 2026-10-18
 
 - `extras/mu-plugins/vs-lean-global-styles.php`: optional must-use plugin (plugin
   layer, not loaded by the theme) that drops core default presets the theme turns
@@ -14,6 +14,11 @@ All notable changes to this starter. Versions follow semver.
   `core-comments.css`. Core renders nothing when comments are closed and there
   are none; empty template parts are hidden in `global.css`. The Playground
   blueprint adds 2 comments (one reply) to the sample post.
+- Icons have one source of truth: `assets/icons/icons.php` (name => SVG
+  markup). The Icon block's `enum` is injected from it with the
+  `block_type_metadata` filter, so adding an icon is one line. Replaces the
+  `ICONS` constant, the block.json enum and the eight `.svg` files; `icon()` no
+  longer reads `.svg` files or uses the object cache. Icon block 0.2.0, same output.
 
 ## 0.1.0 - 2026-10-18
 

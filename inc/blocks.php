@@ -7,13 +7,8 @@
 
 namespace VanillaStarter;
 
-/**
- * Icons shipped in assets/icons. Also the allowlist for file reads, so no
- * user input ever reaches the filesystem. Keep in sync with blocks/icon/block.json.
- */
-const ICONS = array( 'arrow-right', 'check', 'chevron-down', 'close', 'external', 'mail', 'menu', 'search' );
-
 add_action( 'init', __NAMESPACE__ . '\\register_blocks' );
+add_filter( 'block_type_metadata', __NAMESPACE__ . '\\icon_block_enum' );
 
 /**
  * Registers blocks/<name>/block.json. A known list, so no directory scan.
@@ -25,33 +20,46 @@ function register_blocks(): void {
 }
 
 /**
+ * Icons from assets/icons/icons.php, the single list of icon names.
+ *
+ * @return array<string, string> Icon name => SVG markup.
+ */
+function icons(): array {
+	static $icons = null;
+	return $icons ??= require get_template_directory() . '/assets/icons/icons.php';
+}
+
+/**
+ * Fills the Icon block's `name` enum from icons(), so block.json never lists names.
+ *
+ * @param array $metadata Block metadata from block.json.
+ * @return array
+ */
+function icon_block_enum( array $metadata ): array {
+	if ( 'vanilla-starter/icon' === ( $metadata['name'] ?? '' ) ) {
+		$metadata['attributes']['name']['enum'] = array_keys( icons() );
+	}
+	return $metadata;
+}
+
+/**
  * Returns an inline SVG icon.
  *
- * @param string $name  Icon name from ICONS.
+ * @param string $name  Icon name, a key of icons().
  * @param string $label Accessible label. Empty means decorative (aria-hidden).
  * @return string SVG markup, or '' for unknown names.
  */
 function icon( string $name, string $label = '' ): string {
-	static $svgs = array();
-
-	if ( ! in_array( $name, ICONS, true ) ) {
+	$svg = icons()[ $name ] ?? '';
+	if ( '' === $svg ) {
 		return '';
-	}
-
-	if ( ! isset( $svgs[ $name ] ) ) {
-		$svg = wp_cache_get( $name, 'vs_icons' );
-		if ( false === $svg ) {
-			$svg = (string) file_get_contents( get_template_directory() . '/assets/icons/' . $name . '.svg' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local theme file.
-			wp_cache_set( $name, $svg, 'vs_icons' );
-		}
-		$svgs[ $name ] = trim( $svg );
 	}
 
 	$attrs = '' === $label
 		? 'aria-hidden="true" focusable="false"'
 		: 'role="img" aria-label="' . esc_attr( $label ) . '"';
 
-	return preg_replace( '/^<svg\b/', '<svg class="vs-icon" ' . $attrs, $svgs[ $name ], 1 );
+	return preg_replace( '/^<svg\b/', '<svg class="vs-icon" ' . $attrs, $svg, 1 );
 }
 
 /**

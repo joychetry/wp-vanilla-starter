@@ -78,7 +78,7 @@ Install Query Monitor to see queries and enqueued assets per page.
 | Site-wide CSS | `assets/css/global.css` | Only rules every page needs. Prefer theme.json first. |
 | A custom block | `blocks/<name>/` with `block.json`, `render.php`, optional `style.css` | Add the folder name to the list in `inc/blocks.php`. Use `"autoRegister": true` for editor controls with no JS. |
 | Behaviour that needs JS | `blocks/<name>/view.js` as `viewScriptModule` | Vanilla ES module, under 2KB, try native HTML first. |
-| An icon | `assets/icons/<name>.svg` | 24x24 viewBox, `stroke="currentColor"`, `width="1em" height="1em"`. Add the name to `ICONS` in `inc/blocks.php` and to the `enum` in `blocks/icon/block.json`. |
+| An icon | One line in `assets/icons/icons.php`: `'name' => '<svg ...>',` | The only place icons are listed. The Icon block's dropdown and `\VanillaStarter\icon( 'name' )` pick it up; nothing to edit in `block.json`. 24x24 viewBox, `stroke="currentColor"`, `width="1em" height="1em"`, no single quotes in the markup (or escape them). |
 | Layout helpers | classes `stack`, `cluster`, `sidebar`, `grid`, `center`, `cover` | Add in the block's "Additional CSS class(es)". Tune with `--space`, `--min`, `--measure`, etc. |
 
 `front-page.html` shows the content of the static front page (Settings >

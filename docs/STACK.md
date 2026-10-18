@@ -201,7 +201,10 @@ Tier 1 plus plain CSS with theme.json tokens and inline SVG. No third-party fron
   only queries the theme adds are the menu lookups the nav block needs. The block stylesheet list is cached in a non-expiring transient
   keyed by theme version (autoloaded, so no extra query); `local` and
   `development` environments skip the cache. Theme blocks come from a fixed list.
-  Icons come from an allowlist and are cached per request and in the object cache.
+  Icons are one PHP array (`assets/icons/icons.php`): one `require` per request,
+  served from OPcache, no `.svg` reads. The Icon block's `enum` is filled from the
+  same array through the `block_type_metadata` filter, so the list lives in one
+  place.
 - **Markup.** Templates use core blocks and three small theme blocks. No wrapper
   divs for styling hooks.
 
