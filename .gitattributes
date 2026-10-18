@@ -1,0 +1,10 @@
+# `git archive` builds a clean theme zip without dev files.
+/bin export-ignore
+/docs export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.lighthouserc.json export-ignore
+/phpcs.xml.dist export-ignore
+/AGENTS.md export-ignore
+/CLAUDE.md export-ignore

@@ -1,0 +1,11 @@
+.wp-block-quote {
+	margin-inline: 0;
+	padding-inline-start: var(--wp--preset--spacing--40);
+	border-inline-start: 4px solid var(--wp--preset--color--accent);
+}
+
+.wp-block-quote cite {
+	color: var(--wp--preset--color--muted);
+	font-size: var(--wp--preset--font-size--small);
+	font-style: normal;
+}

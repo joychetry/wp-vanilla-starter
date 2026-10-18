@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "vanilla-starter/icon",
+	"version": "0.1.0",
+	"title": "Icon",
+	"category": "design",
+	"icon": "star-empty",
+	"description": "Inline SVG icon from the theme. Decorative unless a label is set.",
+	"keywords": [ "svg", "symbol" ],
+	"textdomain": "vanilla-starter",
+	"attributes": {
+		"name": {
+			"type": "string",
+			"label": "Icon",
+			"enum": [ "arrow-right", "check", "chevron-down", "close", "external", "mail", "menu", "search" ],
+			"default": "check"
+		},
+		"label": {
+			"type": "string",
+			"label": "Accessible label (leave empty if decorative)",
+			"default": ""
+		}
+	},
+	"supports": {
+		"autoRegister": true,
+		"html": false,
+		"color": { "text": true, "background": false },
+		"typography": { "fontSize": true },
+		"spacing": { "margin": true }
+	},
+	"render": "file:./render.php",
+	"style": "file:./style.css"
+}

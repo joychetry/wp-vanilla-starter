@@ -1,0 +1,19 @@
+{
+	"ci": {
+		"collect": {
+			"url": [ "http://127.0.0.1:9400/", "http://127.0.0.1:9400/?p=1" ],
+			"numberOfRuns": 3,
+			"settings": { "formFactor": "mobile", "screenEmulation": { "mobile": true } }
+		},
+		"assert": {
+			"assertions": {
+				"largest-contentful-paint": [ "error", { "maxNumericValue": 1500 } ],
+				"cumulative-layout-shift": [ "error", { "maxNumericValue": 0 } ],
+				"total-blocking-time": [ "error", { "maxNumericValue": 50 } ],
+				"resource-summary:script:size": [ "error", { "maxNumericValue": 5120 } ],
+				"render-blocking-resources": [ "warn", { "maxLength": 0 } ]
+			}
+		},
+		"upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
+	}
+}

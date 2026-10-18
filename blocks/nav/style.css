@@ -1,0 +1,136 @@
+.wp-block-vanilla-starter-nav ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.wp-block-vanilla-starter-nav a {
+	color: inherit;
+	text-decoration: none;
+	text-underline-offset: 0.25em;
+}
+
+.wp-block-vanilla-starter-nav a:hover,
+.wp-block-vanilla-starter-nav [aria-current] {
+	text-decoration: underline;
+}
+
+.vs-nav__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--preset--spacing--20) var(--wp--preset--spacing--40);
+}
+
+.vs-nav__list ul {
+	padding-inline-start: var(--wp--preset--spacing--40);
+}
+
+.vs-nav__toggle,
+.vs-nav__close {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	padding: 0.375em 0.75em;
+	border: 1px solid currentColor;
+	border-radius: 0.25rem;
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+/* Small screens: the list lives in a full-screen native popover. */
+.vs-nav__panel {
+	inset: 0;
+	width: 100%;
+	max-width: none;
+	height: 100%;
+	max-height: none;
+	margin: 0;
+	padding: var(--wp--preset--spacing--50);
+	border: 0;
+	background: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+}
+
+.vs-nav__panel:popover-open {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--50);
+}
+
+.vs-nav__panel .vs-nav__list {
+	flex-direction: column;
+	font-size: var(--wp--preset--font-size--large);
+}
+
+.vs-nav__close {
+	align-self: flex-end;
+}
+
+html:has(.vs-nav__panel:popover-open) {
+	overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.vs-nav__panel {
+		opacity: 0;
+		transition: opacity 0.2s, display 0.2s allow-discrete, overlay 0.2s allow-discrete;
+	}
+
+	.vs-nav__panel:popover-open {
+		opacity: 1;
+	}
+
+	@starting-style {
+		.vs-nav__panel:popover-open {
+			opacity: 0;
+		}
+	}
+}
+
+/* Wide screens: author styles beat the popover UA styles, so the list shows inline. */
+@media (min-width: 48rem) {
+	.vs-nav__toggle,
+	.vs-nav__close {
+		display: none;
+	}
+
+	.vs-nav__panel {
+		display: block;
+		position: static;
+		width: auto;
+		height: auto;
+		padding: 0;
+		overflow: visible;
+		background: none;
+		color: inherit;
+		opacity: 1;
+	}
+
+	.vs-nav__panel .vs-nav__list {
+		flex-direction: row;
+		font-size: inherit;
+	}
+
+	.is-collapsible li {
+		position: relative;
+	}
+
+	.is-collapsible .vs-nav__list ul {
+		display: none;
+		position: absolute;
+		z-index: 10;
+		top: 100%;
+		inset-inline-end: 0; /* Opens toward the page, since the header nav sits on the right. */
+		min-width: 12rem;
+		padding: var(--wp--preset--spacing--30);
+		background: var(--wp--preset--color--base);
+		box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 0.12);
+	}
+
+	.is-collapsible li:hover > ul,
+	.is-collapsible li:focus-within > ul {
+		display: block;
+	}
+}

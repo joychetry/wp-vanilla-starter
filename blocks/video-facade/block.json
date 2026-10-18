@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "vanilla-starter/video-facade",
+	"version": "0.1.0",
+	"title": "Video Facade",
+	"category": "media",
+	"icon": "video-alt3",
+	"description": "YouTube thumbnail with a play button. The player (youtube-nocookie) loads only on click.",
+	"keywords": [ "youtube", "embed", "video" ],
+	"textdomain": "vanilla-starter",
+	"attributes": {
+		"video": {
+			"type": "string",
+			"label": "YouTube URL or video ID",
+			"default": ""
+		},
+		"title": {
+			"type": "string",
+			"label": "Video title (used for the play button and player)",
+			"default": ""
+		}
+	},
+	"supports": {
+		"autoRegister": true,
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": { "margin": true }
+	},
+	"render": "file:./render.php",
+	"style": "file:./style.css",
+	"viewScriptModule": "file:./view.js"
+}

@@ -1,0 +1,5 @@
+node_modules/
+vendor/
+.lighthouseci/
+*.zip
+.DS_Store

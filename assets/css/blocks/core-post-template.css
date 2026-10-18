@@ -1,0 +1,5 @@
+/* Post lists: divider between entries. */
+.wp-block-post-template > li + li {
+	padding-block-start: var(--wp--preset--spacing--50);
+	border-block-start: 1px solid var(--wp--preset--color--surface);
+}

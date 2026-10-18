@@ -1,0 +1,188 @@
+/*
+ * Global styles: reset, accessibility basics, layout primitives.
+ * Tokens come from theme.json (--wp--preset--*). Keep this file small:
+ * block-specific rules go in assets/css/blocks/core-<block>.css.
+ */
+
+/* Reset lives in a layer so core and theme.json styles always win over it. */
+@layer reset {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	html {
+		-webkit-text-size-adjust: none;
+		text-size-adjust: none;
+	}
+
+	body {
+		margin: 0;
+		min-height: 100dvh;
+	}
+
+	img,
+	picture,
+	video,
+	canvas,
+	svg {
+		display: block;
+		max-width: 100%;
+	}
+
+	svg.vs-icon {
+		display: inline-block;
+		flex-shrink: 0;
+		vertical-align: middle;
+	}
+
+	img,
+	video {
+		height: auto;
+	}
+
+	input,
+	button,
+	textarea,
+	select {
+		font: inherit;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		text-wrap: balance;
+	}
+
+	p,
+	li,
+	figcaption {
+		text-wrap: pretty;
+		overflow-wrap: break-word;
+	}
+}
+
+/* Accessibility basics. */
+.screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+:target {
+	scroll-margin-block-start: var(--wp--preset--spacing--60);
+}
+
+a {
+	text-underline-offset: 0.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/*
+ * Layout primitives (Every Layout / CUBE CSS). Add the class in the block's
+ * "Additional CSS class" field. Tune with the custom properties.
+ */
+
+/* Stack: vertical rhythm between siblings. */
+.stack {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.stack > * {
+	margin-block: 0;
+}
+
+.stack > * + * {
+	margin-block-start: var(--space, var(--wp--preset--spacing--40));
+}
+
+/* Cluster: wrapping row of items (tags, buttons, links). */
+.cluster {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: var(--align, center);
+	justify-content: var(--justify, flex-start);
+	gap: var(--space, var(--wp--preset--spacing--30));
+}
+
+/* Sidebar: first child is the sidebar, the rest takes the remaining space. */
+.sidebar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space, var(--wp--preset--spacing--50));
+}
+
+.sidebar > :first-child {
+	flex-basis: var(--side-width, 16rem);
+	flex-grow: 1;
+}
+
+.sidebar > :last-child {
+	flex-basis: 0;
+	flex-grow: 999;
+	min-inline-size: var(--content-min, 55%);
+}
+
+/* Grid: as many columns as fit, each at least --min wide. */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(var(--min, 16rem), 100%), 1fr));
+	gap: var(--space, var(--wp--preset--spacing--50));
+}
+
+/* Center: horizontally centred, max-width measure. */
+.center {
+	box-sizing: content-box;
+	max-inline-size: var(--measure, 65ch);
+	margin-inline: auto;
+	padding-inline: var(--gutter, 0);
+}
+
+/* Cover: vertically centres the .cover__main child in a min-height block. */
+.cover {
+	display: flex;
+	flex-direction: column;
+	min-block-size: var(--min-height, 80vh);
+	padding: var(--space, var(--wp--preset--spacing--50));
+}
+
+.cover > * {
+	margin-block: var(--space, var(--wp--preset--spacing--50));
+}
+
+.cover > :first-child:not(.cover__main) {
+	margin-block-start: 0;
+}
+
+.cover > :last-child:not(.cover__main) {
+	margin-block-end: 0;
+}
+
+.cover > .cover__main {
+	margin-block: auto;
+}

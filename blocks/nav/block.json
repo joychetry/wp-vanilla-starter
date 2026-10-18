@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "vanilla-starter/nav",
+	"version": "0.1.0",
+	"title": "Lean Navigation",
+	"category": "theme",
+	"icon": "menu",
+	"description": "Menu from a menu location or navigation post. Mobile menu uses a native popover, no JavaScript.",
+	"keywords": [ "menu", "navigation" ],
+	"textdomain": "vanilla-starter",
+	"attributes": {
+		"location": {
+			"type": "string",
+			"label": "Menu location",
+			"enum": [ "primary", "footer" ],
+			"default": "primary"
+		},
+		"ref": {
+			"type": "integer",
+			"label": "Navigation post ID (overrides location, 0 to ignore)",
+			"default": 0
+		},
+		"label": {
+			"type": "string",
+			"label": "Accessible name",
+			"default": ""
+		},
+		"collapse": {
+			"type": "boolean",
+			"label": "Collapse into a menu button on small screens",
+			"default": true
+		}
+	},
+	"supports": {
+		"autoRegister": true,
+		"html": false,
+		"typography": { "fontSize": true },
+		"spacing": { "margin": true }
+	},
+	"render": "file:./render.php",
+	"style": "file:./style.css"
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="Vanilla Starter">
+	<description>WordPress-Extra for the theme.</description>
+
+	<file>.</file>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg value="sp"/>
+
+	<config name="minimum_wp_version" value="7.0"/>
+	<config name="testVersion" value="8.1-"/>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="vanilla-starter"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="VanillaStarter"/>
+				<element value="vanilla_starter"/>
+			</property>
+		</properties>
+		<!-- render.php runs inside a function scope in core; patterns hold no globals. -->
+		<exclude-pattern>/blocks/*/render.php</exclude-pattern>
+		<exclude-pattern>/patterns/*</exclude-pattern>
+	</rule>
+
+	<!-- Namespaced function files, no class per file. -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>*</exclude-pattern>
+	</rule>
+</ruleset>
