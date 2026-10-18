@@ -41,3 +41,8 @@ This block theme is built on a shared efficiency-first starter. Read
   `vanilla-starter-`, CSS classes `vs-`.
 - Check: `php -l` on changed PHP, JSON validity, `bin/budget.sh`, no PHP notices
   with `WP_DEBUG`, and blocks valid in the editor.
+
+## Commits
+- Commit after each major change (new block, template set, token overhaul, docs section), one logical change per commit with a clear message.
+- Run `php -l`, `bin/budget.sh` and the em dash check before every commit. Push to `origin main` only after they pass.
+- Never commit half-finished work mid-run. This repo is public.
