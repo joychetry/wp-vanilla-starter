@@ -124,7 +124,8 @@ function render_form_settings(): void {
 	$keys  = turnstile_keys();
 	$ready = '' !== $keys['site'] && '' !== $keys['secret'];
 	?>
-	<div class="wrap">
+	<div class="wrap vs-form-settings">
+		<style>.vs-form-settings :is(input:not([type=checkbox], [type=radio], [type=hidden]), textarea) { min-height: 40px; }</style>
 		<h1><?php esc_html_e( 'Form settings', 'vanilla-starter' ); ?></h1>
 		<?php settings_errors(); ?>
 		<nav class="nav-tab-wrapper">
