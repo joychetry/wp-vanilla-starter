@@ -2,6 +2,13 @@
 
 All notable changes to this starter. Versions follow semver.
 
+## Unreleased
+
+- Appearance > Theme Settings (`inc/setup.php`): one admin page that links to
+  every theme control (Styles, Templates, Template parts, Patterns, Fonts,
+  Menus, Menu locations) and shows which menu each location uses. No options
+  stored, no front-end cost.
+
 ## 0.2.0 - 2026-10-18
 
 - `extras/mu-plugins/vs-lean-global-styles.php`: optional must-use plugin (plugin
