@@ -4,6 +4,12 @@ All notable changes to this starter. Versions follow semver.
 
 ## Unreleased
 
+- Forms without a plugin (`inc/forms.php`, `inc/forms-admin.php`, see
+  `docs/FORMS.md`): a `forms()` registry, contact and newsletter patterns,
+  honeypot, render-time and rate-limit spam checks, private Submissions per form,
+  Form settings (notify emails, JSON webhook with `{{field}}` template), Quick
+  view, Resend, privacy export and erase. `assets/js/forms.js` (1.3KB module)
+  and `assets/css/forms.css` load only where a form renders.
 - Appearance > Theme Settings (`inc/setup.php`): one admin page that links to
   every theme control (Styles, Templates, Template parts, Patterns, Fonts,
   Menus, Menu locations) and shows which menu each location uses. No options

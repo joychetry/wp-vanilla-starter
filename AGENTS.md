@@ -23,7 +23,9 @@ This block theme is built on a shared efficiency-first starter. Read
 ## Always
 
 - Block theme, WordPress 7.0+, PHP 8.1+.
-- `functions.php` only includes `inc/setup.php`, `inc/assets.php`, `inc/blocks.php`.
+- `functions.php` only includes `inc/setup.php`, `inc/assets.php`, `inc/blocks.php`,
+  `inc/forms.php`, `inc/forms-admin.php`.
+- Forms use the theme pipeline in `inc/forms.php` (see `docs/FORMS.md`). No form plugin.
 - Every stylesheet the theme enqueues sets `path` data so core can inline it.
   Core block styling goes in `assets/css/blocks/core-<block>.css`.
 - Theme CSS stays under 40KB raw; JS is 0KB on a normal page and any JS file is

@@ -25,6 +25,9 @@ Or drop the folder into `wp-content/themes/` and activate it.
 - `blocks/`: PHP-only blocks: `nav` (popover menu, no JS), `icon` (inline SVG),
   `video-facade` (YouTube player on click, 715 byte module).
 - `assets/css/`: `global.css` plus per-block `core-*.css`, all inlined by core.
+- Forms: `inc/forms.php` and `inc/forms-admin.php`, no plugin. Contact and
+  newsletter patterns, Submissions in wp-admin, webhook and emails. The 1.3KB
+  script and the styles load only on pages with a form.
 - `bin/`: `budget.sh`, `rename.sh`, Playground blueprint.
 - `extras/`: optional plugin-layer code, not loaded by the theme. Currently a
   must-use plugin that trims core's unused default presets from global styles.
@@ -37,4 +40,5 @@ are deliberately left to plugins chosen per project.
 - [docs/STACK.md](docs/STACK.md): decisions, theme vs plugin split, UI tiers, targets.
 - [docs/REUSE.md](docs/REUSE.md): new projects, local dev, workflow, updates, release.
 - [docs/EXCEPTIONS.md](docs/EXCEPTIONS.md): log of approved libraries.
+- [docs/FORMS.md](docs/FORMS.md): how forms work and how to add one.
 - [CHANGELOG.md](CHANGELOG.md)
