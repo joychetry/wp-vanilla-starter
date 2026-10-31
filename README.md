@@ -26,7 +26,7 @@ Or drop the folder into `wp-content/themes/` and activate it.
   `video-facade` (YouTube player on click, 715 byte module).
 - `assets/css/`: `global.css` plus per-block `core-*.css`, all inlined by core.
 - Forms: `inc/forms.php` and `inc/forms-admin.php`, no plugin. Contact and
-  newsletter patterns, Submissions in wp-admin, webhook and emails. The 1.3KB
+  newsletter patterns, Submissions in wp-admin, webhook and emails. The 1.5KB
   script and the styles load only on pages with a form.
 - `bin/`: `budget.sh`, `rename.sh`, Playground blueprint.
 - `extras/`: optional plugin-layer code, not loaded by the theme. Currently a

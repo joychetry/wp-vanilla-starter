@@ -8,7 +8,7 @@ no form plugin. A new form takes one entry in PHP and one pattern of plain HTML.
 1. **A pattern renders the form.** It posts to `form_action()`
    (`admin-post.php?action=vs_form`), has `data-vs-form`, and calls
    `form_fields( '<key>' )` and `form_error()`.
-2. **`assets/js/forms.js` sends it with fetch.** The script (about 1.3KB) and
+2. **`assets/js/forms.js` sends it with fetch.** The script (about 1.5KB) and
    `assets/css/forms.css` load only on pages where a form renders: any HTML
    block containing `data-vs-form` enqueues them. The script disables the
    button, shows its `data-busy` text and posts with `Accept: application/json`.

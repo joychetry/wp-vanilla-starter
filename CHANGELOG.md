@@ -2,7 +2,7 @@
 
 All notable changes to this starter. Versions follow semver.
 
-## Unreleased
+## 0.3.0 - 2026-10-31
 
 - Optional Cloudflare Turnstile on forms: shared site and secret keys in
   Submissions > Form settings, a checkbox per form, server-side token check.
@@ -12,7 +12,7 @@ All notable changes to this starter. Versions follow semver.
   `docs/FORMS.md`): a `forms()` registry, contact and newsletter patterns,
   honeypot, render-time and rate-limit spam checks, private Submissions per form,
   Form settings (notify emails, JSON webhook with `{{field}}` template), Quick
-  view, Resend, privacy export and erase. `assets/js/forms.js` (1.3KB module)
+  view, Resend, privacy export and erase. `assets/js/forms.js` (1.5KB module)
   and `assets/css/forms.css` load only where a form renders.
 - Appearance > Theme Settings (`inc/setup.php`): one admin page that links to
   every theme control (Styles, Templates, Template parts, Patterns, Fonts,
