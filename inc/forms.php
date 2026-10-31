@@ -54,17 +54,90 @@ function forms(): array {
  * Per-form settings from Submissions > Form settings.
  *
  * @param string $key Form key.
- * @return array{notify: string, endpoint: string, data: string}
+ * @return array{notify: string, endpoint: string, data: string, turnstile: bool}
  */
 function form_settings( string $key ): array {
 	$all = (array) get_option( 'vs_forms', array() );
 	return wp_parse_args(
 		$all[ $key ] ?? array(),
 		array(
-			'notify'   => '',
-			'endpoint' => '',
-			'data'     => '',
+			'notify'    => '',
+			'endpoint'  => '',
+			'data'      => '',
+			'turnstile' => false,
 		)
+	);
+}
+
+/**
+ * Cloudflare Turnstile keys, shared by every form.
+ *
+ * @return array{site: string, secret: string}
+ */
+function turnstile_keys(): array {
+	$keys = (array) get_option( 'vs_turnstile', array() );
+	return array(
+		'site'   => (string) ( $keys['site'] ?? '' ),
+		'secret' => (string) ( $keys['secret'] ?? '' ),
+	);
+}
+
+/**
+ * True when a form has Turnstile ticked and both keys are set.
+ *
+ * @param string $key Form key.
+ */
+function turnstile_on( string $key ): bool {
+	$keys = turnstile_keys();
+	return form_settings( $key )['turnstile'] && '' !== $keys['site'] && '' !== $keys['secret'];
+}
+
+/**
+ * Asks Cloudflare whether a Turnstile token is valid. Fails closed.
+ *
+ * @param string $token Posted cf-turnstile-response.
+ * @param string $ip    Visitor IP.
+ */
+function turnstile_verify( string $token, string $ip ): bool {
+	if ( '' === $token ) {
+		return false;
+	}
+	$response = wp_remote_post(
+		'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+		array(
+			'timeout' => 10,
+			'body'    => array(
+				'secret'   => turnstile_keys()['secret'],
+				'response' => $token,
+				'remoteip' => $ip,
+			),
+		)
+	);
+	$body = json_decode( (string) wp_remote_retrieve_body( $response ), true );
+	return ! is_wp_error( $response ) && ! empty( $body['success'] );
+}
+
+/**
+ * Adds the Turnstile widget, before the error slot, to each form that has it on,
+ * and loads Cloudflare's script only then.
+ *
+ * @param string $html Rendered HTML holding one or more forms.
+ * @return string
+ */
+function add_turnstile( string $html ): string {
+	return (string) preg_replace_callback(
+		'#<form\b[^>]*data-vs-form.*?</form>#s',
+		function ( array $m ): string {
+			if ( ! preg_match( '/name="vs_form" value="([a-z0-9_-]+)"/', $m[0], $key ) || ! turnstile_on( $key[1] ) ) {
+				return $m[0];
+			}
+			// Cloudflare requires loading api.js from its own host. Logged in docs/EXCEPTIONS.md.
+			wp_enqueue_script( 'vanilla-starter-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, array( 'strategy' => 'async', 'in_footer' => true ) ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- versioned by Cloudflare.
+			$widget = '<div class="cf-turnstile" data-sitekey="' . esc_attr( turnstile_keys()['site'] ) . '"></div>';
+			$at     = strpos( $m[0], '<p class="vs-form-err"' );
+			return false === $at ? str_replace( '</form>', $widget . '</form>', $m[0] ) : substr_replace( $m[0], $widget, $at, 0 );
+		},
+		$html
 	);
 }
 
@@ -134,8 +207,8 @@ function form_error(): void {
 
 /**
  * On any HTML block that holds a form: refreshes the render time (a pattern
- * copied into a page freezes it) and loads the form script and styles, so
- * pages without a form load neither.
+ * copied into a page freezes it), adds Turnstile where it is on, and loads the
+ * form script and styles, so pages without a form load none of it.
  *
  * @param string $html Rendered block.
  * @return string
@@ -148,7 +221,7 @@ function form_block_render( string $html ): string {
 	wp_enqueue_script_module( 'vanilla-starter-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), $version );
 	wp_enqueue_style( 'vanilla-starter-forms', get_theme_file_uri( 'assets/css/forms.css' ), array(), $version );
 	wp_style_add_data( 'vanilla-starter-forms', 'path', get_theme_file_path( 'assets/css/forms.css' ) );
-	return (string) preg_replace( '/name="vs_ts" value="\d+"/', 'name="vs_ts" value="' . time() . '"', $html );
+	return add_turnstile( (string) preg_replace( '/name="vs_ts" value="\d+"/', 'name="vs_ts" value="' . time() . '"', $html ) );
 }
 
 /**
@@ -213,6 +286,11 @@ function handle_form(): void {
 			form_reply( false, $error, 422 );
 		}
 		$values[ $name ] = $value;
+	}
+
+	// Last, so only otherwise valid sends cost a remote request.
+	if ( turnstile_on( $key ) && ! turnstile_verify( sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ?? '' ) ), $ip ) ) {
+		form_reply( false, __( 'Please complete the security check and send again.', 'vanilla-starter' ), 403 );
 	}
 	// phpcs:enable
 

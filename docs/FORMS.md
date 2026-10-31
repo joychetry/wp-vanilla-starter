@@ -16,7 +16,8 @@ no form plugin. A new form takes one entry in PHP and one pattern of plain HTML.
    visitor gets a plain message page.
 3. **`handle_form()` checks it.** Honeypot (bots get a fake success), render
    time (sends under 3 seconds after page load are refused), rate limit (5 sends
-   per form per IP per 10 minutes), then each field against its definition.
+   per form per IP per 10 minutes), each field against its definition, then
+   Cloudflare Turnstile when the form has it on.
 4. **It is saved as a Submission.** A private `vs_submission` post, tagged with
    the `vs_form` term for the form key. Field values live in `_vs_fields`, the
    email in `_vs_email`, the sending page in `_vs_page`, the last webhook result
@@ -33,8 +34,8 @@ no form plugin. A new form takes one entry in PHP and one pattern of plain HTML.
 
 | File | What it holds |
 | --- | --- |
-| `inc/forms.php` | `forms()` registry, `form_fields()`, `form_error()`, `handle_form()`, webhook, emails |
-| `inc/forms-admin.php` | Submissions menu (one entry per form), Form settings, list columns, Quick view, Resend, privacy export and erase |
+| `inc/forms.php` | `forms()` registry, `form_fields()`, `form_error()`, `handle_form()`, Turnstile, webhook, emails |
+| `inc/forms-admin.php` | Submissions menu (one entry per form), Form settings with Turnstile keys, list columns, Quick view, Resend, privacy export and erase |
 | `assets/js/forms.js` | Background send for every `[data-vs-form]` |
 | `assets/css/forms.css` | `.vs-form` layout, `.vs-form-err`, `.vs-hp` (hides the honeypot) |
 | `patterns/contact-form.php`, `patterns/newsletter-form.php` | The two shipped forms |
@@ -133,6 +134,29 @@ In wp-admin, go to **Submissions > Form settings**. Each form has a tab:
 Each form also gets its own entry under the Submissions menu, which lists only
 its rows. Each row has View, Quick view (the full details in a native
 `<dialog>`, no admin JavaScript) and, once a webhook ran, Resend.
+
+### Cloudflare Turnstile
+
+Optional, per form. Below the tabs, the **Cloudflare Turnstile** section holds
+the site key and secret key, shared by all forms (from Cloudflare dashboard >
+Turnstile). Then tick **Turnstile** on each form's tab that should use it.
+
+- A form uses Turnstile only when it is ticked and both keys are saved.
+  Clearing the site key turns it off everywhere.
+- The secret is never printed back into the page. Leave the field empty to
+  keep the saved one.
+- The theme adds the widget before the form's error slot and loads Cloudflare's
+  `api.js` only on pages with such a form (see `docs/EXCEPTIONS.md`). Patterns
+  need no change.
+- `handle_form()` verifies the token with Cloudflare after the fields pass, and
+  refuses the send if the check fails or Cloudflare cannot be reached.
+  `forms.js` resets the widget after each send, since tokens are single use.
+- Without JavaScript the widget cannot run, so a form with Turnstile on needs JS.
+- After ticking or unticking, purge the page cache, or cached pages keep the
+  old form markup.
+- For local testing use Cloudflare's test keys: site
+  `1x00000000000000000000AA` with secret `1x0000000000000000000000000000000AA`
+  (always passes) or `2x0000000000000000000000000000000AA` (always fails).
 
 Submissions are included in Tools > Export Personal Data and Erase Personal
 Data, matched by email.

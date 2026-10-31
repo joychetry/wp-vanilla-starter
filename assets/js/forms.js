@@ -32,6 +32,11 @@ document.addEventListener( 'submit', async ( event ) => {
 		button.disabled = false;
 		button.textContent = label;
 	}
+	// Turnstile tokens are single use, so get a fresh one for the next send.
+	const check = form.querySelector( '.cf-turnstile' );
+	if ( check ) {
+		window.turnstile?.reset( check );
+	}
 	if ( ! reply.ok ) {
 		if ( error ) {
 			error.textContent = reply.message;

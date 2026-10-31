@@ -54,6 +54,34 @@ function register_form_settings(): void {
 			'sanitize_callback' => __NAMESPACE__ . '\\sanitize_form_settings',
 		)
 	);
+	// Same group, so one Save on Form settings stores both.
+	register_setting(
+		'vs_forms',
+		'vs_turnstile',
+		array(
+			'type'              => 'array',
+			'default'           => array(),
+			'sanitize_callback' => __NAMESPACE__ . '\\sanitize_turnstile',
+		)
+	);
+}
+
+/**
+ * Cleans the Turnstile keys. An empty secret keeps the saved one, so the
+ * secret is never printed back into the page.
+ *
+ * @param mixed $input Posted keys.
+ * @return array{site: string, secret: string}
+ */
+function sanitize_turnstile( mixed $input ): array {
+	$input  = (array) $input;
+	$site   = sanitize_text_field( (string) ( $input['site'] ?? '' ) );
+	$secret = sanitize_text_field( (string) ( $input['secret'] ?? '' ) );
+	return array(
+		'site'   => $site,
+		// Clearing the site key clears the secret too, which turns Turnstile off.
+		'secret' => '' === $site ? '' : ( '' === $secret ? turnstile_keys()['secret'] : $secret ),
+	);
 }
 
 /**
@@ -75,9 +103,10 @@ function sanitize_form_settings( mixed $input ): array {
 			$data = $all[ $key ]['data'] ?? '';
 		}
 		$all[ $key ] = array(
-			'notify'   => implode( ', ', $emails ),
-			'endpoint' => esc_url_raw( trim( (string) ( $row['endpoint'] ?? '' ) ), array( 'https', 'http' ) ),
-			'data'     => $data,
+			'notify'    => implode( ', ', $emails ),
+			'endpoint'  => esc_url_raw( trim( (string) ( $row['endpoint'] ?? '' ) ), array( 'https', 'http' ) ),
+			'data'      => $data,
+			'turnstile' => ! empty( $row['turnstile'] ),
 		);
 	}
 	return $all;
@@ -92,10 +121,12 @@ function render_form_settings(): void {
 	$tab   = isset( $forms[ $tab ] ) ? $tab : (string) array_key_first( $forms );
 	$s     = form_settings( $tab );
 	$name  = 'vs_forms[' . $tab . ']';
+	$keys  = turnstile_keys();
+	$ready = '' !== $keys['site'] && '' !== $keys['secret'];
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Form settings', 'vanilla-starter' ); ?></h1>
-		<?php settings_errors( 'vs_forms' ); ?>
+		<?php settings_errors(); ?>
 		<nav class="nav-tab-wrapper">
 			<?php foreach ( $forms as $key => $form ) : ?>
 				<a class="nav-tab<?php echo $key === $tab ? ' nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( 'edit.php?post_type=vs_submission&page=vs-form-settings&tab=' . $key ) ); ?>"><?php echo esc_html( $form['label'] ); ?></a>
@@ -121,6 +152,29 @@ function render_form_settings(): void {
 						<?php esc_html_e( 'JSON shape with {{field}} placeholders. Empty sends every field. Fields:', 'vanilla-starter' ); ?>
 						<code><?php echo esc_html( implode( ', ', array_keys( $forms[ $tab ]['fields'] ) ) ); ?></code>
 					</p></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Turnstile', 'vanilla-starter' ); ?></th>
+					<td><label><input type="checkbox" name="<?php echo esc_attr( $name ); ?>[turnstile]" value="1" <?php checked( $s['turnstile'] ); ?>>
+						<?php esc_html_e( 'Ask visitors to pass a Cloudflare Turnstile check on this form', 'vanilla-starter' ); ?></label>
+					<?php if ( ! $ready ) : ?>
+						<p class="description"><?php esc_html_e( 'Off until both Turnstile keys below are saved.', 'vanilla-starter' ); ?></p>
+					<?php endif; ?></td>
+				</tr>
+			</table>
+
+			<h2><?php esc_html_e( 'Cloudflare Turnstile', 'vanilla-starter' ); ?></h2>
+			<p><?php esc_html_e( 'Shared by all forms. Get both keys from Cloudflare dashboard > Turnstile, then tick Turnstile on each form that should use it.', 'vanilla-starter' ); ?></p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="vs-ts-site"><?php esc_html_e( 'Site key', 'vanilla-starter' ); ?></label></th>
+					<td><input class="regular-text code" id="vs-ts-site" name="vs_turnstile[site]" value="<?php echo esc_attr( $keys['site'] ); ?>" autocomplete="off" spellcheck="false">
+					<p class="description"><?php esc_html_e( 'Empty turns Turnstile off on every form.', 'vanilla-starter' ); ?></p></td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="vs-ts-secret"><?php esc_html_e( 'Secret key', 'vanilla-starter' ); ?></label></th>
+					<td><input class="regular-text code" type="password" id="vs-ts-secret" name="vs_turnstile[secret]" value="" autocomplete="new-password" spellcheck="false"
+						placeholder="<?php echo '' === $keys['secret'] ? '' : esc_attr__( 'Saved. Leave empty to keep it.', 'vanilla-starter' ); ?>"></td>
 				</tr>
 			</table>
 			<?php submit_button(); ?>

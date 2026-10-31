@@ -4,6 +4,10 @@ All notable changes to this starter. Versions follow semver.
 
 ## Unreleased
 
+- Optional Cloudflare Turnstile on forms: shared site and secret keys in
+  Submissions > Form settings, a checkbox per form, server-side token check.
+  Cloudflare's script loads only on pages with a form that has it on. Logged in
+  `docs/EXCEPTIONS.md`.
 - Forms without a plugin (`inc/forms.php`, `inc/forms-admin.php`, see
   `docs/FORMS.md`): a `forms()` registry, contact and newsletter patterns,
   honeypot, render-time and rate-limit spam checks, private Submissions per form,
